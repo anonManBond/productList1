@@ -376,27 +376,6 @@ public class Program
         }
     }
 
-    // In the UserManager class, add the following methods:
-
-    // Get a user by username
-    /*
-    public User GetUserByUsername(string username)
-    {
-        return users.Find(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
-    }
-
-    // Deletes a user by username
-    public void DeleteUser(string username)
-    {
-        var userToDelete = users.Find(u => u.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
-        if (userToDelete != null)
-        {
-            users.Remove(userToDelete);
-            SaveUsers();  // Save the updated list of users
-        }
-    }
-    */
-
     // Deletes a product from the list based on user choice
     static void DeleteProduct()
     {
