@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 public class Product
 {
@@ -84,7 +85,7 @@ public class Program
         if (key == ConsoleKey.R)
         {
             RegisterNewUser();
-            return true;
+            return HandleUserRegistrationOrLogin();
         }
         // If user presses 'L' for login, perform login
         if (key == ConsoleKey.L)
@@ -95,12 +96,12 @@ public class Program
         if (key == ConsoleKey.D) 
         {
             DeleteUser();
-            return true;
+            return HandleUserRegistrationOrLogin();
         }
 
         // If the user presses an invalid key, show an error message and return false
         ShowError("Invalid option. Please press 'L', 'R', or 'D'.");
-        return false;
+        return HandleUserRegistrationOrLogin();
     }
 
     // Login process 
@@ -117,7 +118,7 @@ public class Program
         if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
         {
             ShowError("Username or Password cannot be empty");
-            return false;
+            return HandleUserRegistrationOrLogin();
         }
 
         return userManager.Login(username, password);
@@ -144,6 +145,8 @@ public class Program
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("User registered successfully!");
         Console.ResetColor();
+
+        Thread.Sleep(3000);
     }
 
     // Handels User password input without displaying it on the screen
