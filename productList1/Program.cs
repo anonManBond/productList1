@@ -62,10 +62,10 @@ public class Program
         Console.WriteLine("Welcome to Program List Manager");
 
         // Check if user is registered or logs in
-        if (!HandleUserRegistrationOrLogin())
+        while (!HandleUserRegistrationOrLogin())
         {
-            Console.WriteLine("Incorrect Login... Please Try Again:");
-            return;
+            ShowError("Incorrect Login... Please Try Again:");
+            Thread.Sleep(3000);
         }
 
         // Load existing products from file if available
@@ -244,22 +244,14 @@ public class Program
         }
     }
 
-    // Displays a confirmation message and waits for user input hljjvhjvhhvjhvjhvj
-    static bool ConfirmContinue(string message)
-    {
-        Console.WriteLine(message);
-        var key = Console.ReadKey(true).Key;
-        return key == ConsoleKey.Y;
-    }
-
     // Displays a list of all products
     static void DisplayProducts(List<Product> products, string searchTerm = null)
     {
         if (!products.Any())
         {
-            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("-----------------------------------------------------------");
             Console.WriteLine("No products available.");
-            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("-----------------------------------------------------------");
         }
         else
         {
@@ -289,7 +281,9 @@ public class Program
 
             // Display total amount of products
             Console.WriteLine();
-            Console.WriteLine($"{"Total amount:",10} {totalPrice,25:C}");
+            string totalAmountLabel = "".PadRight(categoryWidth) + "Total amount:".PadRight(productWidth);
+            string totalAmountFormatted = $"{totalAmountLabel}{totalPrice,15:C}";
+            Console.WriteLine(totalAmountFormatted);
             Console.WriteLine("---------------------------------------------------------------");
         }
 
@@ -303,28 +297,30 @@ public class Program
     // Handles user choice, add product, search, delete, or quit
     static void HandleUserChoice()
     {
-        ConsoleKey key = Console.ReadKey(true).Key;
+        while (true)
+        {
+            ConsoleKey key = Console.ReadKey(true).Key;
 
-        if (key == ConsoleKey.P) 
-        {
-            ManageProducts(); // Add new product
-        }
-        else if (key == ConsoleKey.S)
-        {
-            SearchProducts(); // Search for a product
-        }
-        else if (key == ConsoleKey.Q)
-        {
-            Console.WriteLine("Goodbye!"); // Exit Program
-        }
-        else if (key == ConsoleKey.D) // Delete a Product
-        {
-            DeleteProduct();
-        }
-        else
-        {
-            ShowError("Invalid option. Please press 'P', 'S', 'D' or 'Q'.");
-            HandleUserChoice();
+            switch (key)
+            {
+                case ConsoleKey.P:
+                    ManageProducts();
+                    return;
+                case ConsoleKey.S:
+                    SearchProducts();
+                    return;
+                case ConsoleKey.Q:
+                    Console.WriteLine("Goodbye!");
+                    Thread.Sleep(5000);
+                    return;
+                case ConsoleKey.D:
+                    DeleteProduct();
+                    return;
+                default:
+                    ShowError("Invalid option. Please press 'P', 'S', 'D' or 'Q'.");
+                    break;
+
+            }
         }
     }
 
@@ -358,13 +354,15 @@ public class Program
             ShowError("User not found.");
             return;
         }
-
+        
         if (!ConfirmContinue($"Are you sure you want to delete the user '{username}'? (y/n)"))
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("User deletion canceled.");
+            Console.ResetColor();
             return;
         }
-
+        
         bool deleted = userManager.DeleteUser(username);
 
         if (deleted)
@@ -377,6 +375,14 @@ public class Program
         {
             ShowError("Failed to delete user.");
         }
+    }
+
+    // Displays a confirmation message for delete user and waits for user input 
+    static bool ConfirmContinue(string message)
+    {
+        Console.WriteLine(message);
+        var key = Console.ReadKey(true).Key;
+        return key == ConsoleKey.Y;
     }
 
     // Deletes a product from the list based on user choice
